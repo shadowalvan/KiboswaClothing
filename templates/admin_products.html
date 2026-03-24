@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - Product Management</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+        color: #fff;
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    .header {
+        background: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+        padding: 20px 60px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .header h1 {
+        color: #f44336;
+        font-size: 28px;
+    }
+    
+    .header nav ul {
+        display: flex;
+        gap: 30px;
+        list-style: none;
+    }
+    
+    .admin-container {
+        max-width: 1400px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+    
+    .admin-header {
+        background: linear-gradient(135deg, rgba(244,67,54,0.2) 0%, rgba(15,32,39,0.8) 100%);
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+    
+    .admin-nav {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+    }
+    
+    .admin-nav a {
+        padding: 10px 20px;
+        background: rgba(255,255,255,0.1);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: 0.3s;
+    }
+    
+    .admin-nav a:hover, .admin-nav a.active {
+        background: #f44336;
+    }
+    
+    .add-product-form {
+        background: rgba(255,255,255,0.08);
+        padding: 25px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+    }
+    
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+    }
+    
+    .form-group input, .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 5px;
+        color: white;
+    }
+    
+    .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: rgba(255,255,255,0.05);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    .admin-table th {
+        background: rgba(244,67,54,0.2);
+        padding: 15px;
+        text-align: left;
+        color: #f44336;
+    }
+    
+    .admin-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .product-image {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 5px;
+    }
+    
+    .btn {
+        padding: 5px 12px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 0 2px;
+    }
+    
+    .btn-add {
+        background: #4caf50;
+        color: white;
+        padding: 10px 20px;
+        width: 100%;
+    }
+    
+    .btn-edit {
+        background: #ff9800;
+        color: white;
+    }
+    
+    .btn-delete {
+        background: #f44336;
+        color: white;
+    }
+    
+    @media (max-width: 768px) {
+        .admin-table {
+            font-size: 12px;
+        }
+    }
+</style>
+</head>
+<body>
+
+<section class="header">
+    <h1>KIBOSWA ADMIN</h1>
+    <nav>
+        <ul>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/admin">Admin Panel</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </nav>
+</section>
+
+<div class="admin-container">
+    <div class="admin-header">
+        <h1><i class="fas fa-boxes"></i> Product Management</h1>
+        <p>Add, edit, or remove products from inventory</p>
+    </div>
+    
+    <div class="admin-nav">
+        <a href="/admin">📊 Overview</a>
+        <a href="/admin/users">👥 Users</a>
+        <a href="/admin/products" class="active">📦 Products</a>
+        <a href="/admin/orders">📋 Orders</a>
+    </div>
+    
+    <div class="add-product-form">
+        <h3><i class="fas fa-plus-circle"></i> Add New Product</h3>
+        <form method="POST" action="/admin/product/add">
+            <div class="form-grid">
+                <input type="text" name="name" placeholder="Product Name" required>
+                <input type="number" name="price" step="0.01" placeholder="Price" required>
+                <input type="number" name="rating" step="0.1" placeholder="Rating (1-5)" value="4.5">
+                <input type="text" name="image" placeholder="Image URL">
+                <input type="number" name="stock" placeholder="Stock Quantity" value="10">
+                <textarea name="description" rows="2" placeholder="Product Description"></textarea>
+            </div>
+            <button type="submit" class="btn btn-add" style="margin-top: 15px;">
+                <i class="fas fa-save"></i> Add Product
+            </button>
+        </form>
+    </div>
+    
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Rating</th>
+                <th>Stock</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pid, product in products.items() %}
+            <tr>
+                <td>{{ pid }}</td>
+                <td>
+                    <img class="product-image" src="{% if product.image.startswith('http') %}{{ product.image }}{% else %}{{ url_for('static', filename='images/' + product.image) }}{% endif %}" alt="{{ product.name }}">
+                </td>
+                <td>{{ product.name }}</td>
+                <td>${{ "%.2f"|format(product.price) }}</td>
+                <td>{{ product.rating }} ★</td>
+                <td>{{ product.stock }}</td>
+                <td>
+                    <button class="btn btn-edit" onclick="editProduct('{{ pid }}')">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="btn btn-delete" onclick="deleteProduct('{{ pid }}')">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function editProduct(id) {
+        const newPrice = prompt("Enter new price:");
+        if (newPrice && !isNaN(newPrice)) {
+            fetch(`/api/product/${id}`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({price: parseFloat(newPrice)})
+            })
+            .then(() => location.reload());
+        }
+    }
+    
+    function deleteProduct(id) {
+        if(confirm('Delete this product?')) {
+            fetch(`/api/product/${id}`, {method: 'DELETE'})
+            .then(() => location.reload());
+        }
+    }
+</script>
+
+</body>
+</html>

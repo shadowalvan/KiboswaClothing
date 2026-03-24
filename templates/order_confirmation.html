@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order Confirmation - Kiboswa Clothing Co</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+    .confirmation-container {
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 0 20px;
+        text-align: center;
+    }
+    
+    .success-icon {
+        font-size: 80px;
+        color: #00d4b0;
+        margin-bottom: 20px;
+    }
+    
+    .confirmation-card {
+        background: rgba(255,255,255,0.05);
+        padding: 40px;
+        border-radius: 15px;
+        margin-top: 30px;
+    }
+    
+    .order-details {
+        text-align: left;
+        margin: 30px 0;
+        padding: 20px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 10px;
+    }
+    
+    .order-details p {
+        margin: 10px 0;
+    }
+    
+    .order-items {
+        margin: 20px 0;
+    }
+    
+    .order-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .btn {
+        display: inline-block;
+        padding: 12px 30px;
+        margin: 10px;
+        background: #00d4b0;
+        color: #000;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+    
+    .btn:hover {
+        background: #fff;
+    }
+</style>
+</head>
+<body>
+
+<section class="header">
+    <h1>KIBOSWA</h1>
+    <nav>
+        <ul id="navLinks">
+            <li><a href="/">Home</a></li>
+            <li><a href="/products">Products</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+        <div id="mobile">
+            <i id="bar" class="fa fa-bars" onclick="showMenu()"></i>
+        </div>
+    </nav>
+</section>
+
+<div class="confirmation-container">
+    <div class="success-icon">
+        <i class="fas fa-check-circle"></i>
+    </div>
+    <h1>Order Confirmed!</h1>
+    <p>Thank you for your purchase. Your order has been received.</p>
+    
+    <div class="confirmation-card">
+        <h2 style="color: #00d4b0;">Order Details</h2>
+        <div class="order-details">
+            <p><strong>Order ID:</strong> #{{ order.order_id }}</p>
+            <p><strong>Date:</strong> {{ order.date }}</p>
+            <p><strong>Status:</strong> <span style="color: #00d4b0;">{{ order.status|upper }}</span></p>
+            
+            <div class="order-items">
+                <h3>Items:</h3>
+                {% for item in order.items %}
+                <div class="order-item">
+                    <span>{{ item.name }} x {{ item.quantity }}</span>
+                    <span>${{ "%.2f"|format(item.price * item.quantity) }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="order-item" style="border-top: 2px solid #00d4b0; margin-top: 10px; padding-top: 15px;">
+                <strong>Total</strong>
+                <strong>${{ "%.2f"|format(order.total) }}</strong>
+            </div>
+        </div>
+        
+        <p style="margin-top: 20px;">A confirmation email has been sent to your email address.</p>
+        
+        <div>
+            <a href="/dashboard" class="btn">Go to Dashboard</a>
+            <a href="/products" class="btn">Continue Shopping</a>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="copyright">
+        <p>&copy; 2025 Kiboswa Clothing CC</p>
+    </div>
+</footer>
+
+<script>
+    const navLinks = document.getElementById("navLinks");
+    
+    function showMenu() {
+        navLinks.style.right = "0";
+    }
+    
+    function hideMenu() {
+        navLinks.style.right = "-300px";
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!-- Header + Hero -->
+<section class="header">
+  <nav>
+    <a href="index.html"><img src="images/logo.png" alt="Logo" class="site-logo"></a>
+
+    <div class="nav-links" id="navLinks">
+      <i class="fa fa-times" onclick="hideMenu()"></i>
+      <ul>
+        <li><a href="index.html">HOME</a></li>
+        <li><a href="about.html">ABOUT</a></li>
+        <li><a href="course.html">COURSE</a></li>
+        <li><a href="#">FINANCE</a></li>
+        <li><a href="#">CONTACT</a></li>
+      </ul>
+    </div>
+
+    <i class="fa fa-bars" onclick="showMenu()"></i>
+  </nav>
+
+  <div class="text-box">
+    <h1>Windhoek Medical University</h1>
+    <p>Shaping Africa's Healthcare Future</p>
+    <a href="#" class="hero-btn">Visit us to know more</a>
+  </div>
+</section>
+
+<script>
+  function showMenu(){
+    document.getElementById('navLinks').style.right = "0";
+  }
+  function hideMenu(){
+    document.getElementById('navLinks').style.right = "-200px";
+  }
+  // initialize hidden for mobile
+  document.addEventListener('DOMContentLoaded', function(){
+    document.getElementById('navLinks').style.right = "-200px";
+  });
+</script>

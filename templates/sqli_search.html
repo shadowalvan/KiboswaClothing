@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQL Injection Search - Kiboswa CTF</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+    .challenge-container {
+        min-height: 80vh;
+        padding: 40px 20px;
+        background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+    }
+    
+    .challenge-card {
+        max-width: 900px;
+        margin: 0 auto;
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        border: 1px solid rgba(0,212,176,0.3);
+    }
+    
+    .search-box {
+        display: flex;
+        gap: 10px;
+        margin: 30px 0;
+    }
+    
+    .search-box input {
+        flex: 1;
+        padding: 12px 15px;
+        background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(0,212,176,0.3);
+        border-radius: 8px;
+        color: white;
+        font-size: 14px;
+    }
+    
+    .search-box button {
+        padding: 12px 30px;
+        background: #00d4b0;
+        border: none;
+        border-radius: 8px;
+        color: #000;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    
+    .results {
+        margin-top: 20px;
+        background: rgba(0,0,0,0.3);
+        border-radius: 10px;
+        padding: 20px;
+    }
+    
+    .product-item {
+        padding: 10px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        margin-bottom: 10px;
+    }
+    
+    .product-item:last-child {
+        border-bottom: none;
+    }
+    
+    .flag-found {
+        background: rgba(76,175,80,0.2);
+        border-left: 3px solid #4caf50;
+        padding: 10px;
+        margin-top: 10px;
+        color: #4caf50;
+    }
+</style>
+</head>
+<body>
+
+<section class="header">
+    <h1>KIBOSWA CTF</h1>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/challenges">Challenges</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </nav>
+</section>
+
+<div class="challenge-container">
+    <div class="challenge-card">
+        <div class="challenge-header" style="text-align: center;">
+            <div class="challenge-icon" style="margin: 0 auto 20px; width: 60px; height: 60px;">
+                <i class="fas fa-search" style="font-size: 30px;"></i>
+            </div>
+            <h1>SQL Injection Data Extraction</h1>
+            <span class="challenge-difficulty">Medium</span>
+            <span class="challenge-points">150 pts</span>
+        </div>
+        
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search products... (Try: ' UNION SELECT ...)" value="{{ request.args.get('name', '') }}">
+            <button onclick="searchProducts()"><i class="fas fa-search"></i> Search</button>
+        </div>
+        
+        <div class="hint" style="background: rgba(255,193,7,0.1); padding: 12px; border-radius: 8px; margin-bottom: 20px;">
+            <p><i class="fas fa-lightbulb"></i> <strong>Hint:</strong> Try <code>' UNION SELECT 1,2,3,secret_flag FROM products_sql --</code></p>
+        </div>
+        
+        <div id="results" class="results">
+            <p><i class="fas fa-info-circle"></i> Enter a search term to see products...</p>
+        </div>
+        
+        <a href="/challenges" class="back-link"><i class="fas fa-arrow-left"></i> Back to Challenges</a>
+    </div>
+</div>
+
+<script>
+    function searchProducts() {
+        const query = document.getElementById('searchInput').value;
+        
+        fetch(`/search?name=${encodeURIComponent(query)}`)
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('results').innerHTML = data;
+            });
+    }
+    
+    // Auto-search on page load if there's a query
+    if (document.getElementById('searchInput').value) {
+        searchProducts();
+    }
+</script>
+
+</body>
+</html>

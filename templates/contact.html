@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Contact Us - Kiboswa Clothing Co</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<!----------GOOGLE FONT---------------->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!----------FONT AWESOME--------------->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+        color: #fff;
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    .header {
+        background: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+        padding: 20px 60px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+    
+    .header h1 {
+        color: #00d4b0;
+        font-size: 28px;
+        font-weight: 700;
+    }
+    
+    .header nav ul {
+        display: flex;
+        gap: 30px;
+        list-style: none;
+        align-items: center;
+    }
+    
+    .header nav ul li a {
+        color: #fff;
+        text-decoration: none;
+        font-weight: 500;
+        transition: 0.3s;
+    }
+    
+    .header nav ul li a:hover, .header nav ul li a.active {
+        color: #00d4b0;
+    }
+    
+    .login-btn {
+        padding: 8px 20px;
+        border: 1px solid #00d4b0;
+        background: transparent;
+        color: #00d4b0;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+        font-weight: 600;
+    }
+    
+    .login-btn:hover {
+        background: #00d4b0;
+        color: #000;
+    }
+    
+    .section-title {
+        text-align: center;
+        margin: 60px 0 40px;
+        color: #00d4b0;
+        font-size: 38px;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+    
+    .location {
+        width: 80%;
+        margin: 0 auto 50px;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    
+    .location iframe {
+        width: 100%;
+        height: 450px;
+        border: 0;
+    }
+    
+    .contact-us {
+        width: 80%;
+        margin: 0 auto 80px;
+    }
+    
+    .row {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 40px;
+    }
+    
+    .contact-col {
+        flex: 1;
+        min-width: 300px;
+    }
+    
+    .contact-col div {
+        display: flex;
+        align-items: center;
+        margin-bottom: 40px;
+        background: rgba(255,255,255,0.08);
+        padding: 20px;
+        border-radius: 10px;
+        transition: 0.3s;
+    }
+    
+    .contact-col div:hover {
+        background: rgba(255,255,255,0.12);
+        transform: translateX(5px);
+    }
+    
+    .contact-col div .fa,
+    .contact-col div .fas,
+    .contact-col div .far {
+        font-size: 32px;
+        color: #00d4b0;
+        margin-right: 20px;
+    }
+    
+    .contact-col div span h5 {
+        font-size: 18px;
+        margin-bottom: 5px;
+        color: #fff;
+    }
+    
+    .contact-col div span p {
+        color: #aaa;
+        font-size: 14px;
+    }
+    
+    .contact-col form {
+        background: rgba(255,255,255,0.08);
+        padding: 30px;
+        border-radius: 15px;
+    }
+    
+    .contact-col input,
+    .contact-col textarea {
+        width: 100%;
+        padding: 15px;
+        margin-bottom: 17px;
+        background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 8px;
+        color: #fff;
+        font-size: 14px;
+        transition: 0.3s;
+    }
+    
+    .contact-col input:focus,
+    .contact-col textarea:focus {
+        outline: none;
+        border-color: #00d4b0;
+        background: rgba(255,255,255,0.15);
+    }
+    
+    .contact-col input::placeholder,
+    .contact-col textarea::placeholder {
+        color: #aaa;
+    }
+    
+    .hero-btn {
+        display: inline-block;
+        text-decoration: none;
+        padding: 12px 34px;
+        font-size: 13px;
+        background: transparent;
+        cursor: pointer;
+        transition: 0.3s;
+        border: none;
+        border-radius: 5px;
+        font-weight: 600;
+    }
+    
+    .red-btn {
+        border: 1px solid #f44336;
+        background: transparent;
+        color: #f44336;
+    }
+    
+    .red-btn:hover {
+        color: #fff;
+        background: #f44336;
+    }
+    
+    .success-message {
+        background: rgba(76, 175, 80, 0.2);
+        border: 1px solid #4caf50;
+        color: #4caf50;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    .error-message {
+        background: rgba(244, 67, 54, 0.2);
+        border: 1px solid #f44336;
+        color: #f44336;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    footer {
+        background: #0a1a1f;
+        padding: 60px 80px 40px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 40px;
+        margin-top: 60px;
+    }
+    
+    footer .col, footer .col-installation {
+        flex: 1;
+        min-width: 200px;
+    }
+    
+    footer h4 {
+        color: #00d4b0;
+        margin-bottom: 20px;
+        font-size: 16px;
+    }
+    
+    footer p, footer a {
+        color: #aaa;
+        text-decoration: none;
+        font-size: 14px;
+        line-height: 1.8;
+        display: block;
+    }
+    
+    footer a:hover {
+        color: #00d4b0;
+    }
+    
+    footer .follow i {
+        font-size: 20px;
+        margin-right: 12px;
+        color: #fff;
+        transition: 0.3s;
+    }
+    
+    footer .follow i:hover {
+        color: #00d4b0;
+    }
+    
+    footer .copyright {
+        width: 100%;
+        text-align: center;
+        padding-top: 30px;
+        margin-top: 20px;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        color: #666;
+    }
+    
+    #mobile {
+        display: none;
+    }
+    
+    @media (max-width: 768px) {
+        .header {
+            padding: 15px 20px;
+        }
+        
+        .header nav ul {
+            display: none;
+            position: absolute;
+            top: 70px;
+            right: 20px;
+            background: #0f2027;
+            flex-direction: column;
+            padding: 20px;
+            border-radius: 10px;
+            width: 200px;
+            z-index: 999;
+        }
+        
+        #mobile {
+            display: block;
+        }
+        
+        .location, .contact-us {
+            width: 90%;
+        }
+        
+        .row {
+            flex-direction: column;
+        }
+        
+        footer {
+            padding: 40px 20px;
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .section-title {
+            font-size: 28px;
+            margin: 40px 0 30px;
+        }
+    }
+</style>
+</head>
+<body>
+
+<section class="header">
+    <h1>KIBOSWA</h1>
+    <nav>
+        <ul id="navLinks">
+            <li><a href="/">Home</a></li>
+            <li><a href="/products">Products</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/contact" class="active">Contact Us</a></li>
+            <li><a href="/cart"><i class="fa-solid fa-bag-shopping"></i></a></li>
+            {% if current_user.is_authenticated %}
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/logout">Logout</a></li>
+            {% else %}
+                <button class="login-btn" onclick="location.href='/login'">Login</button>
+            {% endif %}
+            <i id="close" class="fa fa-times" onclick="hideMenu()"></i>
+        </ul>
+        <div id="mobile">
+            <i id="bar" class="fa fa-bars" onclick="showMenu()"></i>
+        </div>
+    </nav>
+</section>
+
+<h4 class="section-title">Contact Us</h4>
+
+<section class="location">
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d750085.7754503151!2d33.59386924687501!3d-0.02453549999999381!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182aa76be2b16301%3A0x8ef12a94de66205e!2sKiboswa%20Shop!5e1!3m2!1sen!2sna!4v1763536495702!5m2!1sen!2sna" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+</section>
+
+<section class="contact-us">
+    <div class="row">
+        <div class="contact-col">
+            <div>
+                <i class="fa fa-home"></i>
+                <span>
+                    <h5>Eldoret Malaba Road</h5>
+                    <p>Nandi, Kenya</p>
+                </span>
+            </div>
+            <div>
+                <i class="fa fa-phone"></i>
+                <span>
+                    <h5>+264 814651384</h5>
+                    <p>Monday to Saturday, 8AM to 6PM</p>
+                </span>
+            </div>
+            <div>
+                <i class="fa fa-envelope"></i>
+                <span>
+                    <h5>info@kiboswashop.com</h5>
+                    <p>Email us your query</p>
+                </span>
+            </div>
+        </div>
+        <div class="contact-col">
+            {% if success %}
+            <div class="success-message">
+                <i class="fas fa-check-circle"></i> {{ success }}
+            </div>
+            {% endif %}
+            {% if error %}
+            <div class="error-message">
+                <i class="fas fa-exclamation-circle"></i> {{ error }}
+            </div>
+            {% endif %}
+            
+            <form method="POST" action="/contact">
+                <input type="text" name="name" placeholder="Enter your name" required>
+                <input type="email" name="email" placeholder="Enter email address" required>
+                <input type="text" name="subject" placeholder="Enter your subject" required>
+                <textarea rows="8" name="message" placeholder="Message" required></textarea>
+                <button type="submit" class="hero-btn red-btn">Send Message</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="col">
+        <h4>Contact</h4>
+        <p><strong>Address:</strong> Eldoret Malaba Road</p>
+        <p><strong>Phone:</strong> 264814651384</p>
+        <p><strong>Hours:</strong> 08:00-18:00 Mon-Sat</p>
+        <div class="follow">
+            <h4>Follow us</h4>
+            <div class="icons">
+                <i class="fab fa-facebook"></i>
+                <i class="fab fa-twitter"></i>
+                <i class="fab fa-instagram"></i>
+                <i class="fab fa-linkedin"></i>
+                <i class="fab fa-tiktok"></i>
+                <i class="fab fa-youtube"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <h4>About</h4>
+        <a href="/about">About us</a>
+        <a href="#">Deliveries</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms & Conditions</a>
+        <a href="/contact">Contact us</a>
+    </div>
+    <div class="col">
+        <h4>My Account</h4>
+        {% if current_user.is_authenticated %}
+            <a href="/dashboard">Dashboard</a>
+            <a href="/profile">My Profile</a>
+        {% else %}
+            <a href="/login">Sign in</a>
+        {% endif %}
+        <a href="#">My Wishlist</a>
+        <a href="#">Track my order</a>
+        <a href="#">Help</a>
+    </div>
+    <div class="col-installation">
+        <h4>Install App</h4>
+        <p>From App store or Google Playstore</p>
+        <div class="row">
+            <img src="{{ url_for('static', filename='images/pay/pay.jpg') }}" alt="Payment" style="width: 120px; border-radius: 5px;">
+        </div>
+        <p>Secured Payment Gateways</p>
+        <img src="{{ url_for('static', filename='images/pay/payment_methods.jpg') }}" alt="Payment Methods" style="width: 200px; margin-top: 10px;">
+    </div>
+    <div class="copyright">
+        <p>&copy; 2025 Kiboswa Clothing CC</p>
+    </div>
+</footer>
+
+<script>
+    const navLinks = document.getElementById("navLinks");
+    
+    function showMenu() {
+        navLinks.style.display = "flex";
+        navLinks.style.position = "absolute";
+        navLinks.style.top = "70px";
+        navLinks.style.right = "20px";
+        navLinks.style.backgroundColor = "#0f2027";
+        navLinks.style.flexDirection = "column";
+        navLinks.style.padding = "20px";
+        navLinks.style.borderRadius = "10px";
+        navLinks.style.width = "200px";
+        navLinks.style.zIndex = "999";
+    }
+    
+    function hideMenu() {
+        navLinks.style.display = "";
+    }
+</script>
+
+</body>
+</html>

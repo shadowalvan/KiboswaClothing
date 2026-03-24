@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shopping Cart - Kiboswa Clothing Co</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+    .cart-container {
+        max-width: 1200px;
+        margin: 50px auto;
+        padding: 0 20px;
+    }
+    
+    .cart-header {
+        background: linear-gradient(135deg, #00d4b0 0%, #0f2027 100%);
+        padding: 40px;
+        border-radius: 15px;
+        margin-bottom: 40px;
+        text-align: center;
+    }
+    
+    .cart-items {
+        background: rgba(255,255,255,0.05);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    .cart-item {
+        display: grid;
+        grid-template-columns: 100px 2fr 1fr 1fr 50px;
+        align-items: center;
+        padding: 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        gap: 20px;
+    }
+    
+    .cart-item img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+    
+    .cart-item-details h3 {
+        margin-bottom: 5px;
+    }
+    
+    .cart-item-details p {
+        color: #00d4b0;
+        font-weight: bold;
+    }
+    
+    .cart-item-quantity input {
+        width: 60px;
+        padding: 5px;
+        background: rgba(255,255,255,0.1);
+        border: 1px solid #00d4b0;
+        color: white;
+        border-radius: 4px;
+        text-align: center;
+    }
+    
+    .cart-item-price {
+        font-size: 18px;
+        font-weight: bold;
+        color: #00d4b0;
+    }
+    
+    .cart-summary {
+        margin-top: 30px;
+        background: rgba(255,255,255,0.05);
+        padding: 30px;
+        border-radius: 10px;
+        text-align: right;
+    }
+    
+    .cart-summary h3 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+    
+    .checkout-btn {
+        background: #00d4b0;
+        color: #000;
+        padding: 15px 30px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 20px;
+    }
+    
+    .empty-cart {
+        text-align: center;
+        padding: 60px;
+    }
+    
+    .empty-cart i {
+        font-size: 64px;
+        margin-bottom: 20px;
+    }
+    
+    @media (max-width: 768px) {
+        .cart-item {
+            grid-template-columns: 1fr;
+            text-align: center;
+        }
+        
+        .cart-item img {
+            margin: 0 auto;
+        }
+    }
+</style>
+</head>
+<body>
+
+<section class="header">
+    <h1>KIBOSWA</h1>
+    <nav>
+        <ul id="navLinks">
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/products">Products</a></li>
+            <li><a class="active" href="/cart">Cart</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+        <div id="mobile">
+            <i id="bar" class="fa fa-bars" onclick="showMenu()"></i>
+        </div>
+    </nav>
+</section>
+
+<div class="cart-container">
+    <div class="cart-header">
+        <h1>Shopping Cart</h1>
+        <p>Review your items before checkout</p>
+    </div>
+    
+    {% if cart_items %}
+    <div class="cart-items">
+        {% for item in cart_items %}
+        <div class="cart-item" id="item-{{ item.id }}">
+            <img src="{% if item.image.startswith('http') %}{{ item.image }}{% else %}{{ url_for('static', filename='images/' + item.image) }}{% endif %}" alt="{{ item.name }}">
+            <div class="cart-item-details">
+                <h3>{{ item.name }}</h3>
+            </div>
+            <div class="cart-item-quantity">
+                <input type="number" value="{{ item.quantity }}" min="1" onchange="updateQuantity('{{ item.id }}', this.value)">
+            </div>
+            <div class="cart-item-price">
+                ${{ "%.2f"|format(item.price * item.quantity) }}
+            </div>
+            <div class="cart-item-remove">
+                <a href="/api/cart/remove/{{ item.id }}" style="color: #f44336; text-decoration: none;">
+                    <i class="fas fa-trash"></i>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="cart-summary">
+        <h3>Order Summary</h3>
+        <p>Subtotal: ${{ "%.2f"|format(total) }}</p>
+        <p>Shipping: Free</p>
+        <p>Tax: ${{ "%.2f"|format(total * 0.1) }}</p>
+        <hr style="margin: 15px 0; border-color: rgba(255,255,255,0.1);">
+        <h2>Total: ${{ "%.2f"|format(total * 1.1) }}</h2>
+        <form method="GET" action="/checkout">
+            <button type="submit" class="checkout-btn">Proceed to Checkout</button>
+        </form>
+    </div>
+    {% else %}
+    <div class="empty-cart">
+        <i class="fas fa-shopping-cart"></i>
+        <h2>Your cart is empty</h2>
+        <p>Browse our products and add some items!</p>
+        <a href="/products" class="login-btn" style="display: inline-block; margin-top: 20px;">Continue Shopping</a>
+    </div>
+    {% endif %}
+</div>
+
+<footer>
+    <div class="copyright">
+        <p>&copy; 2025 Kiboswa Clothing CC</p>
+    </div>
+</footer>
+
+<script>
+    const navLinks = document.getElementById("navLinks");
+    
+    function showMenu() {
+        navLinks.style.right = "0";
+    }
+    
+    function hideMenu() {
+        navLinks.style.right = "-300px";
+    }
+    
+    function updateQuantity(productId, quantity) {
+        const formData = new FormData();
+        formData.append('product_id', productId);
+        formData.append('quantity', quantity);
+        
+        fetch('/api/cart/update', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

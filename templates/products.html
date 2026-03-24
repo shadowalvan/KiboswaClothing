@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Products - Kiboswa Clothing Co</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+    .products-hero {
+        background: linear-gradient(135deg, #0f2027 0%, #203a43 100%);
+        padding: 60px 20px;
+        text-align: center;
+    }
+    
+    .products-grid {
+        max-width: 1200px;
+        margin: 50px auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 30px;
+        padding: 0 20px;
+    }
+    
+    .product-card {
+        background: rgba(255,255,255,0.08);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+        text-decoration: none;
+        color: white;
+        display: block;
+    }
+    
+    .product-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .product-card img {
+        width: 100%;
+        height: 280px;
+        object-fit: cover;
+    }
+    
+    .product-info {
+        padding: 20px;
+    }
+    
+    .product-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    
+    .product-price {
+        color: #00d4b0;
+        font-size: 20px;
+        font-weight: bold;
+    }
+    
+    .product-rating {
+        color: #ffc107;
+        margin-top: 8px;
+    }
+    
+    .filter-section {
+        max-width: 1200px;
+        margin: 30px auto 0;
+        padding: 0 20px;
+        display: flex;
+        gap: 15px;
+        justify-content: flex-end;
+    }
+    
+    .filter-section select {
+        padding: 10px;
+        background: rgba(255,255,255,0.1);
+        border: 1px solid #00d4b0;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+
+<section class="header">
+    <h1>KIBOSWA</h1>
+    <nav>
+        <ul id="navLinks">
+            <li><a href="/">Home</a></li>
+            <li><a class="active" href="/products">Products</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/contact">Contact Us</a></li>
+            <li><a href="/cart"><i class="fa-solid fa-bag-shopping"></i></a></li>
+            <button class="login-btn" onclick="location.href='/login'">Login</button>
+            <i id="close" class="fa fa-times" onclick="hideMenu()"></i>
+        </ul>
+        <div id="mobile">
+            <i id="bar" class="fa fa-bars" onclick="showMenu()"></i>
+        </div>
+    </nav>
+</section>
+
+<div class="products-hero">
+    <h1>Our Collection</h1>
+    <p>Discover the latest trends in men's fashion</p>
+</div>
+
+<div class="filter-section">
+    <select id="sortBy" onchange="sortProducts()">
+        <option value="default">Sort by: Featured</option>
+        <option value="price_asc">Price: Low to High</option>
+        <option value="price_desc">Price: High to Low</option>
+        <option value="rating">Highest Rated</option>
+    </select>
+</div>
+
+<div class="products-grid" id="productsGrid">
+    {% for product in products %}
+    <a href="/product/{{ product.id }}" class="product-card" data-price="{{ product.price }}" data-rating="{{ product.rating }}">
+        <img src="{% if product.image.startswith('http') %}{{ product.image }}{% else %}{{ url_for('static', filename='images/' + product.image) }}{% endif %}" alt="{{ product.name }}">
+        <div class="product-info">
+            <div class="product-title">{{ product.name }}</div>
+            <div class="product-price">${{ "%.2f"|format(product.price) }}</div>
+            <div class="product-rating">
+                {% for i in range(5) %}
+                    {% if i < product.rating|int %}
+                        ★
+                    {% else %}
+                        ☆
+                    {% endif %}
+                {% endfor %}
+                ({{ product.rating }})
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+
+<footer>
+    <div class="col">
+        <h4>Contact</h4>
+        <p><strong>Address:</strong> Eldoret Malaba Road</p>
+        <p><strong>Phone:</strong> 264814651384</p>
+        <p><strong>Hours:</strong> 08:00-18:00 Mon-Sat</p>
+        <div class="follow">
+            <h4>Follow us</h4>
+            <div class="icons">
+                <i class="fab fa-facebook"></i>
+                <i class="fab fa-twitter"></i>
+                <i class="fab fa-instagram"></i>
+                <i class="fab fa-linkedin"></i>
+                <i class="fab fa-tiktok"></i>
+                <i class="fab fa-youtube"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <h4>About</h4>
+        <a href="/about">About us</a>
+        <a href="#">Deliveries</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms & Conditions</a>
+        <a href="/contact">Contact us</a>
+    </div>
+    <div class="col">
+        <h4>My Account</h4>
+        <a href="/login">Sign in</a>
+        <a href="#">My Wishlist</a>
+        <a href="#">Track my order</a>
+        <a href="#">Help</a>
+    </div>
+    <div class="copyright">
+        <p>&copy; 2025 Kiboswa Clothing CC</p>
+    </div>
+</footer>
+
+<script>
+    const navLinks = document.getElementById("navLinks");
+    
+    function showMenu() {
+        navLinks.style.right = "0";
+    }
+    
+    function hideMenu() {
+        navLinks.style.right = "-300px";
+    }
+    
+    function sortProducts() {
+        const sortBy = document.getElementById('sortBy').value;
+        const grid = document.getElementById('productsGrid');
+        const products = Array.from(grid.children);
+        
+        products.sort((a, b) => {
+            if (sortBy === 'price_asc') {
+                return parseFloat(a.dataset.price) - parseFloat(b.dataset.price);
+            } else if (sortBy === 'price_desc') {
+                return parseFloat(b.dataset.price) - parseFloat(a.dataset.price);
+            } else if (sortBy === 'rating') {
+                return parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating);
+            }
+            return 0;
+        });
+        
+        products.forEach(product => grid.appendChild(product));
+    }
+</script>
+
+</body>
+</html>
+
+<!--
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kiboswa Clothing Co</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style1.css')}}">
+-->
+<!----------GOOGLE FONT---------------->
+ <!--
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+-->
+<!----------FONT AWESOME--------------->
+<!--
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+</head>
+<body>
+
+<section class="header">
+    <h1>KIBOSWA</h1>
+
+    <nav>
+        <ul id="navLinks">
+            <li><a class="active" href="/">Home</a></li>
+            <li><a href="/products">Products</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/contact">Contact Us</a></li>
+            <li><a href="/cart"><i class="fa-solid fa-bag-shopping"></i></a></li>
+             <button class="login-btn" onclick="location.href='/login'">Login</button>
+            <i id="close" class="fa fa-times" onclick="hideMenu()"></i>
+        </ul>
+
+        <div id="mobile">
+            <i id="bar" class="fa fa-bars" onclick="showMenu()"></i>
+        </div>
+    </nav>
+</section>
+
+
+
+<h2 class="section-title">Products</h2>
+<section class="products">
+    <a href="/product?id=1" class="product-card">
+        <img src="{{url_for ('static', filename = 'images/product1.jpg')}}" />
+        <h4>Men stripped button Front Shirt</h4>
+        <p>$21.99 · ⭐ 4.9</p>
+    </a>
+    <a href="/product?id=2" class="product-card">
+        <img src="https://i.pinimg.com/736x/8c/8e/64/8c8e64f0258f1a0d36ca04557dad17e8.jpg" />
+        <h4>Cable Knit Shirt</h4>
+        <p>$21.99 · ⭐ 4.1</p>
+    </a>
+    <a href="/product?id=3" class="product-card">
+        <img src="https://i.pinimg.com/1200x/71/b8/23/71b8232f72c56411092b6d819403b5fa.jpg" />
+        <h4>Short Sleeve Collar Shirt</h4>
+        <p>$23.99 · ⭐ 5.0</p>
+    </a>
+    <a href="/product?id=4" class="product-card">
+        <img src="https://i.pinimg.com/1200x/33/db/d1/33dbd169e15c3c1d666c348d7d6b7d48.jpg" />
+        <h4>Round Neck Knitted Shirt</h4>
+        <p>$24.99 · ⭐ 4.7</p>
+    </a>
+     <a href="/product?id=5" class="product-card">
+        <img src="https://i.pinimg.com/1200x/9a/58/60/9a58604f2f408c9ce0623d6fd0a31e2a.jpg" />
+        <h4>Men's Vintage Floral Retro</h4>
+        <p>$27.99 · ⭐ 4.5</p>
+    </a>
+     <a href="/product?id=6" class="product-card">
+        <img src="https://i.pinimg.com/736x/6b/9c/2e/6b9c2e4b70d5dada06e298fb2a71d11c.jpg" />
+        <h4>Men Floral Print</h4>
+        <p>$24.99 · ⭐ 4.9</p>
+    </a>
+     <a href="/product?id=7" class="product-card">
+        <img src="https://i.pinimg.com/1200x/a6/21/3f/a6213fe3eb13f9ff9852937b15f0213f.jpg" />
+        <h4>Men Paisley Print Shirt</h4>
+        <p>$23.99 · ⭐ 4.7</p>
+    </a>
+     <div class="product-card">
+        <a href="/product?id=8" class="product-card">
+        <img src="https://i.pinimg.com/1200x/8b/38/bb/8b38bbac8a5e7506688494962bc5c0c4.jpg" />
+        <h4>Men Graphic Print Shirt</h4>
+        <p>$21.99 · ⭐ 4.6</p>
+    </div>
+     <div class="product-card">
+        <a href="/product?id=9" class="product-card">
+        <img src="https://i.pinimg.com/736x/db/81/03/db8103f493a381facbc7bfd6eb6bc17d.jpg" />
+        <h4>Men's Shirt Jeans Shirt Denim Shirt</h4>
+        <p>$22.99 · ⭐ 4.7</p>
+    </div>
+     <div class="product-card">
+        <a href="/product?id=10" class="product-card">
+        <img src="https://i.pinimg.com/1200x/97/d6/3d/97d63d96cebf86324d734c9777f9a7ef.jpg" />
+        <h4>Men Skull Graphic Shirt </h4>
+        <p>$26.99 · ⭐ 4.8</p>
+    </div>
+     <div class="product-card">
+        <a href="/product?id=11" class="product-card">
+        <img src="https://i.pinimg.com/1200x/1b/b4/59/1bb45918fc4fd96f52d385414c2ae6f9.jpg" />
+        <h4>Plain Black Casual denim jacket</h4>
+        <p>$28.99 · ⭐ 4.7</p>
+    </div>
+     <div class="product-card">
+        <a href="/product?id=12" class="product-card">
+        <img src="https://i.pinimg.com/736x/3c/c3/b8/3cc3b81e4d594754c3584c3aa1db60d8.jpg" />
+        <h4>Blue denim jacket</h4>
+        <p>$29.99 · ⭐ 5.0</p>
+    </div>
+</section>
+
+
+
+
+
+
+
+<footer>
+    <div class="col">
+        <img clas="logo" src="img/logo.png" alt="">
+        <h4>Contact</h4>
+        <p><strong>Address:</strong> Eldoret Malaba Road</p>
+        <p><strong>Phone:</strong> 264814651384</p>
+        <p><strong>Hours:</strong> 08:00-18:00 Mon-Sat</p>
+        <div class="follow">
+            <h4>Follow us</h4>
+            <div class="icons">
+                <i class="fab fa-facebook"></i>
+                <i class="fab fa-twitter"></i>
+                <i class="fab fa-instagram"></i>
+                <i class="fab fa-linkedin"></i>
+                <i class="fab fa-tiktok"></i>
+                <i class="fab fa-youtube"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <h4>About</h4>
+        <a href="#">About us</a>
+        <a href="">Deliveries</a>
+        <a href="">Privacy Policy</a>
+        <a href="">Terms & Conditions</a>
+        <a href="">Contact us</a>
+    </div>
+     <div class="col">
+        <h4>My Account</h4>
+        <a href="">Sign in</a>
+        <a href="">My Wishlist</a>
+        <a href="">Track my order</a>
+        <a href="">Help</a>
+    </div>
+    <div class="col-installation">
+        <h4>Install App</h4>
+        <p>From App store or Google Playstore</p>
+        <div class="row">
+            <img src="images/pay/pay.jpg" alt="">
+        </div>
+        <p>Secured Payment Gateways</p>
+        <img src="images/pay/payment_methods.jpg" alt="">
+    </div>
+    <div class="copyright">
+       <p>&copy; 2025 Kiboswa Clothing CC</p>
+    </div>
+</footer>
+
+
+
+
+
+
+<script>
+  const navLinks = document.getElementById("navLinks");
+
+  function showMenu() {
+    navLinks.style.right = "0";
+  }
+
+  function hideMenu() {
+    navLinks.style.right = "-300px";
+  }
+</script>
+
+</body>
+</html>
+-->

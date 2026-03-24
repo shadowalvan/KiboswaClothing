@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kiboswa Clothing Co</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<!----------GOOGLE FONT---------------->
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!----------FONT AWESOME--------------->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+</head>
+<body>
+
+<section class="header">
+    <h1>KIBOSWA</h1>
+
+    <nav>
+        <ul id="navLinks">
+            <li><a class="active" href="/">Home</a></li>
+            <li><a href="/products">Products</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/contact">Contact Us</a></li>
+            <li><a href="/cart"><i class="fa-solid fa-bag-shopping"></i></a></li>
+            <button class="login-btn" onclick="location.href='/login'">Login</button>
+            <i id="close" class="fa fa-times" onclick="hideMenu()"></i>
+        </ul>
+
+        <div id="mobile">
+            <i id="bar" class="fa fa-bars" onclick="showMenu()"></i>
+        </div>
+    </nav>
+</section>
+
+
+<!--
+<section class="login-register">
+<div class="form-container">
+    <div class="form-toggle">
+        <button id="loginBtn" class="active" onclick="showLogin()" style="display: none;>Login</button>
+        <button id="registerBtn" onclick="showRegister()" style="display: none;">Register</button>
+    </div>
+    <form id="loginForm" onsubmit="loginAlert(); return false;"> 
+    <form id="loginForm" method="POST" action="/login">
+        <h2>Login</h2>
+        <input type="text" placeholder="Enter username" name="username" required>
+        <input type="password" placeholder="Enter your password" name="password" required>
+        <button type="submit" class="login-btn">Login</button>
+        <a href="#"> <p> Don't have an account? Register </p></a>
+    </form>
+
+    <form id="registerForm" style="display:none;" onsubmit="registerAlert(); return false;">
+        <h2>Register</h2>
+        <input type="text" placeholder="Full Name" required>
+        <input type="email" placeholder="Enter your email" required>
+        <input type="password" placeholder="Password" required>
+        <input type="password" placeholder="Confirm Password" required>
+        <button type="submit" class="login-btn">Register</button>
+    </form>
+</div>
+</section>
+-->
+<section class="login-register">
+<div class="form-container">
+    <div class="form-toggle">
+        <button id="loginBtn" class="active" onclick="showLogin()" style="display:none;">Login</button>
+        <button id="registerBtn" onclick="showRegister()" style="display: none;">Register</button>
+    </div>
+    <form id="loginForm" method="POST" action="/login">
+        <h2>Login</h2>
+        <input type="text" placeholder="Enter username" name="username" required>
+        <input type="password" placeholder="Enter your password" name="password" required>
+        <button type="submit" class="login-btn">Login</button>
+        <a href="#" onclick="showRegister(); return false;"> <p> Don't have an account? Register </p></a>
+    </form>
+
+    <form id="registerForm" style="display:none;" onsubmit="registerAlert(); return false;">
+        <h2>Register</h2>
+        <input type="text" placeholder="Full Name" name="fullname" required>
+        <input type="email" placeholder="Enter your email" name="email" required>
+        <input type="password" placeholder="Password" name="password" required>
+        <input type="password" placeholder="Confirm Password" name="confirm_password" required>
+        <button type="submit" class="login-btn">Register</button>
+    </form>
+</div>
+</section>
+
+
+
+<footer>
+    <div class="col">
+        <img clas="logo" src="img/logo.png" alt="">
+        <h4>Contact</h4>
+        <p><strong>Address:</strong> Eldoret Malaba Road</p>
+        <p><strong>Phone:</strong> 264814651384</p>
+        <p><strong>Hours:</strong> 08:00-18:00 Mon-Sat</p>
+        <div class="follow">
+            <h4>Follow us</h4>
+            <div class="icons">
+                <i class="fab fa-facebook"></i>
+                <i class="fab fa-twitter"></i>
+                <i class="fab fa-instagram"></i>
+                <i class="fab fa-linkedin"></i>
+                <i class="fab fa-tiktok"></i>
+                <i class="fab fa-youtube"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <h4>About</h4>
+        <a href="#">About us</a>
+        <a href="">Deliveries</a>
+        <a href="">Privacy Policy</a>
+        <a href="">Terms & Conditions</a>
+        <a href="">Contact us</a>
+    </div>
+     <div class="col">
+        <h4>My Account</h4>
+        <a href="">Sign in</a>
+        <a href="">My Wishlist</a>
+        <a href="">Track my order</a>
+        <a href="">Help</a>
+    </div>
+    <div class="col-installation">
+        <h4>Install App</h4>
+        <p>From App store or Google Playstore</p>
+        <div class="row">
+            <img src="{{ url_for('static', filename='images/pay/pay.jpg') }}" alt="">
+        </div>
+        <p>Secured Payment Gateways</p>
+        <img src=" {{ url_for('static', filename='images/pay/payment_methods.jpg') }}" alt="">
+    </div>
+    <div class="copyright">
+       <p>&copy; 2025 Kiboswa Clothing CC</p>
+    </div>
+</footer>
+
+
+
+
+
+
+<script>
+  function showLogin() {
+    document.getElementById('loginForm').style.display = 'block';
+    document.getElementById('registerForm').style.display = 'none';
+    document.getElementById('loginBtn').classList.add('active');
+    document.getElementById('registerBtn').classList.remove('active');
+  }
+  
+  function showRegister() {
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('registerForm').style.display = 'block';
+    document.getElementById('loginBtn').classList.remove('active');
+    document.getElementById('registerBtn').classList.add('active');
+  }
+  
+  function loginAlert() {
+    alert("You are logged in.");
+    // window.location.href = "index.html"; // Uncomment if needed
+  }
+  
+  function registerAlert() {
+    alert("Registration successful!");
+  }
+
+  const navLinks = document.getElementById("navLinks");
+
+  function showMenu() {
+    navLinks.style.right = "0";
+  }
+
+  function hideMenu() {
+    navLinks.style.right = "-300px";
+  }
+</script>
+
+</body>
+</html>

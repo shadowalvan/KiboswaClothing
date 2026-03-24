@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQL Injection Challenge - Kiboswa CTF</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+    .challenge-container {
+        min-height: 80vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 20px;
+        background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+    }
+    
+    .challenge-card {
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        max-width: 500px;
+        width: 100%;
+        border: 1px solid rgba(0,212,176,0.3);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+    
+    .challenge-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .challenge-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #00d4b0, #f44336);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+    }
+    
+    .challenge-icon i {
+        font-size: 40px;
+        color: white;
+    }
+    
+    .challenge-title {
+        font-size: 28px;
+        color: #00d4b0;
+        margin-bottom: 10px;
+    }
+    
+    .challenge-difficulty {
+        display: inline-block;
+        padding: 4px 12px;
+        background: #f44336;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+    
+    .challenge-points {
+        display: inline-block;
+        padding: 4px 12px;
+        background: #ff9800;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        margin-left: 10px;
+    }
+    
+    .challenge-description {
+        background: rgba(0,0,0,0.3);
+        padding: 15px;
+        border-radius: 10px;
+        margin: 20px 0;
+        border-left: 3px solid #00d4b0;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #00d4b0;
+        font-weight: 500;
+    }
+    
+    .form-group input {
+        width: 100%;
+        padding: 12px 15px;
+        background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(0,212,176,0.3);
+        border-radius: 8px;
+        color: white;
+        font-size: 14px;
+        transition: 0.3s;
+    }
+    
+    .form-group input:focus {
+        outline: none;
+        border-color: #00d4b0;
+        background: rgba(255,255,255,0.15);
+    }
+    
+    .submit-btn {
+        width: 100%;
+        padding: 12px;
+        background: #00d4b0;
+        border: none;
+        border-radius: 8px;
+        color: #000;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 16px;
+    }
+    
+    .submit-btn:hover {
+        background: #fff;
+        transform: translateY(-2px);
+    }
+    
+    .result {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 8px;
+        background: rgba(0,0,0,0.3);
+        font-family: monospace;
+    }
+    
+    .result.success {
+        border-left: 3px solid #4caf50;
+        color: #4caf50;
+    }
+    
+    .result.error {
+        border-left: 3px solid #f44336;
+        color: #f44336;
+    }
+    
+    .hint {
+        margin-top: 20px;
+        padding: 12px;
+        background: rgba(255,193,7,0.1);
+        border-radius: 8px;
+        border-left: 3px solid #ffc107;
+    }
+    
+    .hint p {
+        color: #ffc107;
+        font-size: 12px;
+        margin-bottom: 5px;
+    }
+    
+    .back-link {
+        display: inline-block;
+        margin-top: 20px;
+        color: #00d4b0;
+        text-decoration: none;
+        font-size: 14px;
+    }
+    
+    .back-link:hover {
+        text-decoration: underline;
+    }
+</style>
+</head>
+<body>
+
+<section class="header">
+    <h1>KIBOSWA CTF</h1>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/challenges">Challenges</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </nav>
+</section>
+
+<div class="challenge-container">
+    <div class="challenge-card">
+        <div class="challenge-header">
+            <div class="challenge-icon">
+                <i class="fas fa-database"></i>
+            </div>
+            <h1 class="challenge-title">SQL Injection Challenge</h1>
+            <div>
+                <span class="challenge-difficulty">Easy</span>
+                <span class="challenge-points">100 pts</span>
+            </div>
+        </div>
+        
+        <div class="challenge-description">
+            <p><i class="fas fa-info-circle"></i> The login system is vulnerable to SQL injection. Can you bypass authentication and login as admin?</p>
+        </div>
+        
+        <form method="POST" id="loginForm">
+            <div class="form-group">
+                <label><i class="fas fa-user"></i> Username</label>
+                <input type="text" name="username" placeholder="Enter username" id="username">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-lock"></i> Password</label>
+                <input type="password" name="password" placeholder="Enter password" id="password">
+            </div>
+            <button type="submit" class="submit-btn">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+        </form>
+        
+        <div id="result" class="result" style="display: none;"></div>
+        
+        <div class="hint">
+            <p><i class="fas fa-lightbulb"></i> <strong>Hint:</strong></p>
+            <p>Try: <code style="background:#000; padding:2px 5px; border-radius:3px;">admin' --</code></p>
+            <p>Common SQL injection payloads: <code>' OR '1'='1</code>, <code>admin' --</code></p>
+        </div>
+        
+        <a href="/challenges" class="back-link"><i class="fas fa-arrow-left"></i> Back to Challenges</a>
+    </div>
+</div>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        
+        fetch('/login_sql', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+        })
+        .then(response => response.text())
+        .then(data => {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            
+            if (data.includes('FLAG:')) {
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = `<i class="fas fa-flag-checkered"></i> ${data}`;
+            } else {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${data}`;
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

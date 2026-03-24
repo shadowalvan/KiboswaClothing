@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel - Kiboswa Clothing Co</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+        color: #fff;
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    .header {
+        background: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+        padding: 20px 60px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+    
+    .header h1 {
+        color: #f44336;
+        font-size: 28px;
+        font-weight: 700;
+    }
+    
+    .header nav ul {
+        display: flex;
+        gap: 30px;
+        list-style: none;
+        align-items: center;
+    }
+    
+    .header nav ul li a {
+        color: #fff;
+        text-decoration: none;
+        font-weight: 500;
+        transition: 0.3s;
+    }
+    
+    .header nav ul li a:hover {
+        color: #f44336;
+    }
+    
+    .admin-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+    
+    .admin-header {
+        background: linear-gradient(135deg, rgba(244,67,54,0.2) 0%, rgba(15,32,39,0.8) 100%);
+        border-radius: 20px;
+        padding: 40px;
+        margin-bottom: 40px;
+        border: 1px solid rgba(244,67,54,0.3);
+    }
+    
+    .admin-header h1 {
+        font-size: 36px;
+        margin-bottom: 10px;
+        color: #f44336;
+    }
+    
+    .admin-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+    }
+    
+    .stat-box {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 25px;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: transform 0.3s;
+    }
+    
+    .stat-box:hover {
+        transform: translateY(-5px);
+        border-color: #f44336;
+    }
+    
+    .stat-box i {
+        font-size: 40px;
+        color: #f44336;
+        margin-bottom: 15px;
+    }
+    
+    .stat-number {
+        font-size: 32px;
+        font-weight: bold;
+        color: #f44336;
+        margin: 10px 0;
+    }
+    
+    .admin-nav {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding-bottom: 15px;
+    }
+    
+    .admin-nav a {
+        padding: 10px 20px;
+        background: rgba(255,255,255,0.1);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: 0.3s;
+        cursor: pointer;
+    }
+    
+    .admin-nav a:hover, .admin-nav a.active {
+        background: #f44336;
+        color: #fff;
+    }
+    
+    .admin-section {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 25px;
+        margin-top: 20px;
+    }
+    
+    .admin-section h2 {
+        color: #f44336;
+        margin-bottom: 20px;
+        font-size: 24px;
+    }
+    
+    .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    
+    .admin-table th, .admin-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .admin-table th {
+        background: rgba(244,67,54,0.2);
+        color: #f44336;
+        font-weight: 600;
+    }
+    
+    .btn {
+        padding: 5px 12px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 0 3px;
+        font-size: 12px;
+        transition: 0.3s;
+    }
+    
+    .btn-danger {
+        background: #f44336;
+        color: white;
+    }
+    
+    .btn-warning {
+        background: #ff9800;
+        color: white;
+    }
+    
+    .btn-success {
+        background: #4caf50;
+        color: white;
+    }
+    
+    .btn-primary {
+        background: #2196f3;
+        color: white;
+    }
+    
+    .add-product-form {
+        background: rgba(255,255,255,0.08);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+    
+    .add-product-form input, .add-product-form textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        background: rgba(255,255,255,0.1);
+        border: 1px solid #f44336;
+        color: white;
+        border-radius: 5px;
+    }
+    
+    .add-product-form input::placeholder, .add-product-form textarea::placeholder {
+        color: #aaa;
+    }
+    
+    .add-product-form button {
+        background: #f44336;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    
+    .status-badge {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+    
+    .status-pending { background: #ff9800; color: #000; }
+    .status-processing { background: #2196f3; color: #fff; }
+    .status-shipped { background: #9c27b0; color: #fff; }
+    .status-delivered { background: #4caf50; color: #fff; }
+    .status-cancelled { background: #f44336; color: #fff; }
+    
+    @media (max-width: 768px) {
+        .header {
+            padding: 15px 20px;
+        }
+        
+        .admin-table {
+            font-size: 12px;
+        }
+        
+        .admin-table th, .admin-table td {
+            padding: 8px;
+        }
+        
+        .admin-nav a {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+    }
+</style>
+</head>
+<body>
+
+<section class="header">
+    <h1>KIBOSWA ADMIN</h1>
+    <nav>
+        <ul id="navLinks">
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/admin" class="active">Admin Panel</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+        <div id="mobile">
+            <i id="bar" class="fas fa-bars" onclick="showMenu()"></i>
+        </div>
+    </nav>
+</section>
+
+<div class="admin-container">
+    <div class="admin-header">
+        <h1><i class="fas fa-shield-alt"></i> Welcome, {{ user.username }}!</h1>
+        <p>Administrator Access - Full System Control</p>
+    </div>
+    
+    <div class="admin-stats">
+        <div class="stat-box">
+            <i class="fas fa-users"></i>
+            <div class="stat-number">{{ stats.total_users }}</div>
+            <div>Total Users</div>
+        </div>
+        <div class="stat-box">
+            <i class="fas fa-box"></i>
+            <div class="stat-number">{{ stats.total_products }}</div>
+            <div>Total Products</div>
+        </div>
+        <div class="stat-box">
+            <i class="fas fa-shopping-cart"></i>
+            <div class="stat-number">{{ stats.total_orders }}</div>
+            <div>Total Orders</div>
+        </div>
+        <div class="stat-box">
+            <i class="fas fa-dollar-sign"></i>
+            <div class="stat-number">${{ "%.2f"|format(stats.total_revenue) }}</div>
+            <div>Total Revenue</div>
+        </div>
+    </div>
+    
+    <div class="admin-nav">
+        <a href="#" onclick="showSection('users'); return false;" class="active">👥 Users Management</a>
+        <a href="#" onclick="showSection('products'); return false;">📦 Products Management</a>
+        <a href="#" onclick="showSection('orders'); return false;">📋 Orders Management</a>
+        <a href="#" onclick="showSection('system'); return false;">⚙️ System Settings</a>
+    </div>
+    
+    <!-- Users Section -->
+    <div id="usersSection" class="admin-section">
+        <h2><i class="fas fa-users"></i> User Management</h2>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Balance</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for uid, user_data in users.items() %}
+                <tr>
+                    <td>{{ uid }}</td>
+                    <td>{{ user_data.username }}</td>
+                    <td>{{ user_data.email }}</td>
+                    <td><span class="status-badge {% if user_data.role == 'admin' %}status-delivered{% else %}status-processing{% endif %}">{{ user_data.role|upper }}</span></td>
+                    <td>${{ "%.2f"|format(user_data.balance) }}</td>
+                    <td>
+                        <button class="btn btn-warning" onclick="editUser('{{ uid }}')">Edit</button>
+                        {% if user_data.role != 'admin' %}
+                        <button class="btn btn-danger" onclick="deleteUser('{{ uid }}')">Delete</button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Products Section -->
+    <div id="productsSection" class="admin-section" style="display:none;">
+        <h2><i class="fas fa-plus-circle"></i> Add New Product</h2>
+        <div class="add-product-form">
+            <form method="POST" action="/admin/product/add">
+                <input type="text" name="name" placeholder="Product Name" required>
+                <input type="number" name="price" step="0.01" placeholder="Price" required>
+                <input type="number" name="rating" step="0.1" placeholder="Rating (1-5)" value="4.5">
+                <input type="text" name="image" placeholder="Image URL or filename">
+                <textarea name="description" rows="3" placeholder="Product Description"></textarea>
+                <input type="number" name="stock" placeholder="Stock Quantity" value="10">
+                <button type="submit"><i class="fas fa-save"></i> Add Product</button>
+            </form>
+        </div>
+        
+        <h2><i class="fas fa-boxes"></i> Existing Products</h2>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Rating</th>
+                    <th>Stock</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pid, product in products.items() %}
+                <tr>
+                    <td>{{ pid }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>${{ "%.2f"|format(product.price) }}</td>
+                    <td>{{ product.rating }} ★</td>
+                    <td>{{ product.stock }}</td>
+                    <td>
+                        <button class="btn btn-warning" onclick="editProduct('{{ pid }}')">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteProduct('{{ pid }}')">Delete</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Orders Section -->
+    <div id="ordersSection" class="admin-section" style="display:none;">
+        <h2><i class="fas fa-truck"></i> Order Management</h2>
+        {% if orders and orders|length > 0 %}
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>User</th>
+                    <th>Date</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for oid, order in orders.items() %}
+                <tr>
+                    <td>#{{ oid }}</td>
+                    <td>{{ order.username }}</td>
+                    <td>{{ order.date }}</td>
+                    <td>${{ "%.2f"|format(order.total) }}</td>
+                    <td>
+                        <span class="status-badge status-{{ order.status }}">
+                            {{ order.status|upper }}
+                        </span>
+                    </td>
+                    <td>
+                        <select onchange="updateOrderStatus('{{ oid }}', this.value)" class="btn">
+                            <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Pending</option>
+                            <option value="processing" {% if order.status == 'processing' %}selected{% endif %}>Processing</option>
+                            <option value="shipped" {% if order.status == 'shipped' %}selected{% endif %}>Shipped</option>
+                            <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>Delivered</option>
+                            <option value="cancelled" {% if order.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                        </select>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="text-align: center; padding: 40px;"><i class="fas fa-inbox"></i> No orders yet.</p>
+        {% endif %}
+    </div>
+    
+    <!-- System Section -->
+    <div id="systemSection" class="admin-section" style="display:none;">
+        <h2><i class="fas fa-cog"></i> System Settings</h2>
+        <div class="add-product-form">
+            <h3>📊 Database Status</h3>
+            <p><strong>SQLite Database:</strong> Active ✅</p>
+            <p><strong>Debug Mode:</strong> Enabled ⚠️ (Vulnerable)</p>
+            <p><strong>Secret Key:</strong> {{ app_secret_key }}</p>
+            
+            <h3 style="margin-top: 20px;">🏆 CTF Flags</h3>
+            <p><code>FTA{admin_panel_access}</code> - Admin Panel Access</p>
+            <p><code>FTA{sql1nj3ct10n_m4st3r}</code> - SQL Injection Master</p>
+            <p><code>FTA{sst1_rce_m4st3r}</code> - SSTI RCE</p>
+            <p><code>FTA{cmd_inj3ct10n_101}</code> - Command Injection</p>
+            
+            <h3 style="margin-top: 20px;">⚙️ System Actions</h3>
+            <button class="btn btn-warning" onclick="clearCache()">🗑️ Clear Cache</button>
+            <button class="btn btn-success" onclick="backupDatabase()">💾 Backup Database</button>
+            <button class="btn btn-danger" onclick="resetSystem()">⚠️ Reset System</button>
+        </div>
+    </div>
+</div>
+
+<footer style="text-align: center; padding: 30px; color: #888;">
+    <p>&copy; 2025 Kiboswa Clothing Co | Admin Panel | CTF Challenge Mode</p>
+</footer>
+
+<script>
+    function showSection(section) {
+        // Hide all sections
+        document.getElementById('usersSection').style.display = 'none';
+        document.getElementById('productsSection').style.display = 'none';
+        document.getElementById('ordersSection').style.display = 'none';
+        document.getElementById('systemSection').style.display = 'none';
+        
+        // Show selected section
+        document.getElementById(section + 'Section').style.display = 'block';
+        
+        // Update active nav
+        const links = document.querySelectorAll('.admin-nav a');
+        links.forEach(link => link.classList.remove('active'));
+        event.target.classList.add('active');
+    }
+    
+    function editUser(userId) {
+        alert('Edit user functionality coming soon! User ID: ' + userId);
+    }
+    
+    function deleteUser(userId) {
+        if(confirm('Are you sure you want to delete this user? This action cannot be undone!')) {
+            alert('User ' + userId + ' deleted!');
+            // In production, this would make an API call
+        }
+    }
+    
+    function editProduct(productId) {
+        alert('Edit product functionality coming soon! Product ID: ' + productId);
+    }
+    
+    function deleteProduct(productId) {
+        if(confirm('Are you sure you want to delete this product?')) {
+            alert('Product ' + productId + ' deleted!');
+        }
+    }
+    
+    function updateOrderStatus(orderId, status) {
+        alert('Order ' + orderId + ' status updated to: ' + status);
+    }
+    
+    function clearCache() {
+        if(confirm('Clear system cache?')) {
+            alert('Cache cleared successfully!');
+        }
+    }
+    
+    function backupDatabase() {
+        alert('Database backup initiated! Backup file: backup_' + new Date().toISOString() + '.db');
+    }
+    
+    function resetSystem() {
+        if(confirm('⚠️ WARNING: This will reset all data! Are you absolutely sure?')) {
+            if(confirm('LAST CHANCE: Type "RESET" to confirm')) {
+                let confirmText = prompt('Type "RESET" to confirm system reset:');
+                if(confirmText === 'RESET') {
+                    alert('System reset! All data has been cleared.');
+                }
+            }
+        }
+    }
+    
+    // Mobile menu
+    function showMenu() {
+        const nav = document.getElementById('navLinks');
+        nav.style.display = 'flex';
+        nav.style.flexDirection = 'column';
+        nav.style.position = 'absolute';
+        nav.style.top = '70px';
+        nav.style.right = '20px';
+        nav.style.backgroundColor = '#0f2027';
+        nav.style.padding = '20px';
+        nav.style.borderRadius = '10px';
+        nav.style.zIndex = '999';
+    }
+</script>
+
+</body>
+</html>

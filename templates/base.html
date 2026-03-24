@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{% block title %}Kiboswa Clothing{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style1.css') }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+</head>
+<body>
+
+<header class="header">
+    <h1>KIBOSWA</h1>
+    <nav>
+        <ul id="navLinks">
+            <li><a href="/">Home</a></li>
+            <li><a href="/products">Products</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/contact">Contact Us</a></li>
+            {% if role == 'admin' %}
+            <li><a href="/admin">Admin Panel</a></li>
+        {% endif %}
+            {% if 'user_id' in session %}
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/logout">Logout</a></li>
+            {% else %}
+                <li><a href="/login">Login</a></li>
+            {% endif %}
+            <i id="close" class="fa fa-times" onclick="hideMenu()"></i>
+        </ul>
+        <div id="mobile">
+            <i id="bar" class="fa fa-bars" onclick="showMenu()"></i>
+        </div>
+    </nav>
+</header>
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<footer>
+    <div class="col">
+        <img class="logo" src="{{ url_for('static', filename='images/logo.png') }}" alt="">
+        <h4>Contact</h4>
+        <p><strong>Address:</strong> Eldoret Malaba Road</p>
+        <p><strong>Phone:</strong> 264814651384</p>
+        <p><strong>Hours:</strong> 08:00-18:00 Mon-Sat</p>
+        <div class="follow">
+            <h4>Follow us</h4>
+            <div class="icons">
+                <i class="fab fa-facebook"></i>
+                <i class="fab fa-twitter"></i>
+                <i class="fab fa-instagram"></i>
+                <i class="fab fa-linkedin"></i>
+                <i class="fab fa-tiktok"></i>
+                <i class="fab fa-youtube"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <h4>About</h4>
+        <a href="#">About us</a>
+        <a href="#">Deliveries</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms & Conditions</a>
+        <a href="#">Contact us</a>
+    </div>
+    <div class="col-installation">
+        <h4>Install App</h4>
+        <p>From App store or Google Playstore</p>
+        <div class="row">
+            <img src="{{ url_for('static', filename='images/pay/pay.jpg') }}" alt="">
+        </div>
+        <p>Secured Payment Gateways</p>
+        <img src="{{ url_for('static', filename='images/pay/payment_methods.jpg') }}" alt="">
+    </div>
+    <div class="copyright">
+        <p>&copy; 2025 Kiboswa Clothing CC</p>
+    </div>
+</footer>
+
+<script>
+  const navLinks = document.getElementById("navLinks");
+  function showMenu(){ navLinks.style.right = "0"; }
+  function hideMenu(){ navLinks.style.right = "-300px"; }
+</script>
+</body>
+</html>

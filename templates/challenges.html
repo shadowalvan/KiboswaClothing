@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CTF Challenges - Kiboswa</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+    .challenges-container {
+        max-width: 1400px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+    
+    .challenges-header {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+    
+    .challenges-header h1 {
+        font-size: 48px;
+        color: #00d4b0;
+        margin-bottom: 10px;
+    }
+    
+    .category-filter {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-bottom: 40px;
+        flex-wrap: wrap;
+    }
+    
+    .filter-btn {
+        padding: 10px 25px;
+        background: rgba(255,255,255,0.1);
+        border: none;
+        color: white;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    
+    .filter-btn:hover, .filter-btn.active {
+        background: #00d4b0;
+        color: #000;
+    }
+    
+    .challenges-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 25px;
+    }
+    
+    .challenge-card {
+        background: rgba(255,255,255,0.08);
+        border-radius: 15px;
+        overflow: hidden;
+        transition: 0.3s;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .challenge-card:hover {
+        transform: translateY(-5px);
+        border-color: #00d4b0;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    
+    .challenge-header {
+        background: linear-gradient(135deg, rgba(0,212,176,0.2), rgba(0,0,0,0.5));
+        padding: 20px;
+        position: relative;
+    }
+    
+    .challenge-category {
+        display: inline-block;
+        padding: 4px 12px;
+        background: #00d4b0;
+        color: #000;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+    
+    .challenge-points {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: #f44336;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-weight: bold;
+    }
+    
+    .challenge-body {
+        padding: 20px;
+    }
+    
+    .challenge-name {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    
+    .challenge-endpoint {
+        font-family: monospace;
+        background: rgba(0,0,0,0.5);
+        padding: 5px 10px;
+        border-radius: 5px;
+        margin: 15px 0;
+        font-size: 12px;
+    }
+    
+    .challenge-btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background: #00d4b0;
+        color: #000;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+    
+    .challenge-btn:hover {
+        background: #fff;
+    }
+    
+    .solved-badge {
+        background: #4caf50;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        display: inline-block;
+        margin-left: 10px;
+    }
+</style>
+</head>
+<body>
+
+<section class="header">
+    <h1>KIBOSWA CTF</h1>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/challenges" class="active">Challenges</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </nav>
+</section>
+
+<div class="challenges-container">
+    <div class="challenges-header">
+        <h1><i class="fas fa-flag-checkered"></i> CTF Challenges</h1>
+        <p>Test your security skills and capture the flags!</p>
+    </div>
+    
+    <div class="category-filter">
+        <button class="filter-btn active" onclick="filterChallenges('all')">All</button>
+        <button class="filter-btn" onclick="filterChallenges('Web')">🌐 Web</button>
+        <button class="filter-btn" onclick="filterChallenges('System')">💻 System</button>
+        <button class="filter-btn" onclick="filterChallenges('Auth')">🔐 Auth</button>
+        <button class="filter-btn" onclick="filterChallenges('File')">📁 File</button>
+        <button class="filter-btn" onclick="filterChallenges('Misc')">🔧 Misc</button>
+    </div>
+    
+    <div class="challenges-grid" id="challengesGrid">
+        {% for challenge in challenges %}
+        <div class="challenge-card" data-category="{{ challenge.category }}">
+            <div class="challenge-header">
+                <span class="challenge-category">{{ challenge.category }}</span>
+                <span class="challenge-points">{{ challenge.points }} pts</span>
+            </div>
+            <div class="challenge-body">
+                <div class="challenge-name">
+                    {{ challenge.name }}
+                    <span class="solved-badge" style="display: none;">Solved!</span>
+                </div>
+                <div class="challenge-endpoint">
+                    <i class="fas fa-link"></i> {{ challenge.endpoint }}
+                </div>
+                <a href="{{ challenge.endpoint }}" class="challenge-btn" target="_blank">
+                    <i class="fas fa-play"></i> Launch Challenge
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    function filterChallenges(category) {
+        const cards = document.querySelectorAll('.challenge-card');
+        cards.forEach(card => {
+            if (category === 'all' || card.dataset.category === category) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+        
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.innerText === category || (category === 'all' && btn.innerText === 'All')) {
+                btn.classList.add('active');
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

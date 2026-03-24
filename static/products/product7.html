@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kiboswa Clothing Co</title>
+<link rel="stylesheet" href="../style.css">
+
+<!----------GOOGLE FONT---------------->
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!----------FONT AWESOME--------------->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+</head>
+<body>
+
+<section class="header">
+    <h1>KIBOSWA</h1>
+
+    <nav>
+        <ul id="navLinks">
+            <li><a class="active" href="index.html">Home</a></li>
+            <li><a href="products.html">Products</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="cart.html"><i class="fa-solid fa-bag-shopping"></i></a></li>
+             <button class="login-btn" onclick="location.href='login.html'">Login</button>
+            <i id="close" class="fa fa-times" onclick="hideMenu()"></i>
+        </ul>
+
+        <div id="mobile">
+            <i id="bar" class="fa fa-bars" onclick="showMenu()"></i>
+        </div>
+    </nav>
+</section>
+
+
+
+
+<section class="product-page" style="padding: 80px 20px; text-align:center;">
+    <div style="max-width:600px; margin:auto; background: rgba(255,255,255,0.05); padding: 30px; border-radius: 12px;">
+        <img src="https://i.pinimg.com/1200x/a6/21/3f/a6213fe3eb13f9ff9852937b15f0213f.jpg" alt="Product Image" style="width:100%; border-radius:10px; margin-bottom:20px;">
+        <h2 style="color:#00d4b0; margin-bottom:10px;">Men Paisley Print Shirt</h2>
+        <p style="font-size:18px; color:#d8f3f0; margin-bottom:10px;">Price: $23.99</p>
+        <p style="color:#fff; line-height:1.5; margin-bottom:20px;">
+          <!--  Classic men’s button-front shirt with stripes. Comfortable fit and high-quality material, perfect for casual or office wear.-->
+        </p>
+        <button onclick="window.location.href='../products.html'" style="padding:12px 25px; background:#00d4b0; color:#000; border:none; border-radius:6px; cursor:pointer; font-weight:600;">Back to Products</button>
+    </div>
+</section>
+
+
+
+
+
+<footer>
+    <div class="col">
+        <img clas="logo" src="img/logo.png" alt="">
+        <h4>Contact</h4>
+        <p><strong>Address:</strong> Eldoret Malaba Road</p>
+        <p><strong>Phone:</strong> 264814651384</p>
+        <p><strong>Hours:</strong> 08:00-18:00 Mon-Sat</p>
+        <div class="follow">
+            <h4>Follow us</h4>
+            <div class="icons">
+                <i class="fab fa-facebook"></i>
+                <i class="fab fa-twitter"></i>
+                <i class="fab fa-instagram"></i>
+                <i class="fab fa-linkedin"></i>
+                <i class="fab fa-tiktok"></i>
+                <i class="fab fa-youtube"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <h4>About</h4>
+        <a href="#">About us</a>
+        <a href="">Deliveries</a>
+        <a href="">Privacy Policy</a>
+        <a href="">Terms & Conditions</a>
+        <a href="">Contact us</a>
+    </div>
+     <div class="col">
+        <h4>My Account</h4>
+        <a href="">Sign in</a>
+        <a href="">My Wishlist</a>
+        <a href="">Track my order</a>
+        <a href="">Help</a>
+    </div>
+    <div class="col-installation">
+        <h4>Install App</h4>
+        <p>From App store or Google Playstore</p>
+        <div class="row">
+            <img src="images/pay/pay.jpg" alt="">
+        </div>
+        <p>Secured Payment Gateways</p>
+        <img src="images/pay/payment_methods.jpg" alt="">
+    </div>
+    <div class="copyright">
+       <p>&copy; 2025 Kiboswa Clothing CC</p>
+    </div>
+</footer>
+
+
+
+
+
+
+<script>
+  const navLinks = document.getElementById("navLinks");
+
+  function showMenu() {
+    navLinks.style.right = "0";
+  }
+
+  function hideMenu() {
+    navLinks.style.right = "-300px";
+  }
+</script>
+
+</body>
+</html>

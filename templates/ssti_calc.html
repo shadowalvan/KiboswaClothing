@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSTI Calculator - Kiboswa CTF</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+    .challenge-container {
+        min-height: 80vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 20px;
+        background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+    }
+    
+    .calculator-card {
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        max-width: 600px;
+        width: 100%;
+        border: 1px solid rgba(0,212,176,0.3);
+    }
+    
+    .expression-input {
+        display: flex;
+        gap: 10px;
+        margin: 30px 0;
+    }
+    
+    .expression-input input {
+        flex: 1;
+        padding: 15px;
+        background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(0,212,176,0.3);
+        border-radius: 8px;
+        color: white;
+        font-size: 16px;
+        font-family: monospace;
+    }
+    
+    .expression-input button {
+        padding: 15px 30px;
+        background: #00d4b0;
+        border: none;
+        border-radius: 8px;
+        color: #000;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    
+    .result-area {
+        background: rgba(0,0,0,0.3);
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px 0;
+        font-family: monospace;
+        word-break: break-all;
+    }
+    
+    .result-label {
+        color: #00d4b0;
+        margin-bottom: 10px;
+        font-size: 12px;
+        text-transform: uppercase;
+    }
+    
+    .result-value {
+        font-size: 18px;
+        color: #fff;
+    }
+    
+    .warning {
+        background: rgba(244,67,54,0.1);
+        border-left: 3px solid #f44336;
+        padding: 12px;
+        margin-top: 20px;
+    }
+    
+    .success {
+        background: rgba(76,175,80,0.1);
+        border-left: 3px solid #4caf50;
+    }
+</style>
+</head>
+<body>
+
+<section class="header">
+    <h1>KIBOSWA CTF</h1>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/challenges">Challenges</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </nav>
+</section>
+
+<div class="challenge-container">
+    <div class="calculator-card">
+        <div style="text-align: center;">
+            <i class="fas fa-calculator" style="font-size: 48px; color: #00d4b0;"></i>
+            <h1>SSTI Calculator</h1>
+            <span class="challenge-difficulty">Hard</span>
+            <span class="challenge-points">200 pts</span>
+        </div>
+        
+        <div class="expression-input">
+            <input type="text" id="expression" placeholder="Enter expression... (e.g., 2+2, {{7*7}})" value="2+2">
+            <button onclick="calculate()"><i class="fas fa-equals"></i> Calculate</button>
+        </div>
+        
+        <div id="result" class="result-area">
+            <div class="result-label">Result:</div>
+            <div class="result-value" id="resultValue">Waiting for input...</div>
+        </div>
+        
+        <div class="hint" style="background: rgba(255,193,7,0.1); padding: 12px; border-radius: 8px;">
+            <p><i class="fas fa-lightbulb"></i> <strong>SSTI Payloads:</strong></p>
+            <p><code>{{7*7}}</code> - Test if SSTI exists</p>
+            <p><code>{{config}}</code> - View configuration</p>
+            <p><code>{{''.__class__.__mro__[2].__subclasses__()}}</code> - Access Python classes</p>
+            <p><code>__import__('os').system('whoami')</code> - Command execution</p>
+        </div>
+        
+        <a href="/challenges" class="back-link"><i class="fas fa-arrow-left"></i> Back to Challenges</a>
+    </div>
+</div>
+
+<script>
+    function calculate() {
+        const expr = document.getElementById('expression').value;
+        
+        fetch(`/calculate?expr=${encodeURIComponent(expr)}`)
+            .then(response => response.text())
+            .then(data => {
+                const resultDiv = document.getElementById('resultValue');
+                resultDiv.innerHTML = data;
+                
+                if (data.includes('FLAG:')) {
+                    resultDiv.style.color = '#4caf50';
+                } else if (data.includes('Error')) {
+                    resultDiv.style.color = '#f44336';
+                } else {
+                    resultDiv.style.color = '#fff';
+                }
+            });
+    }
+    
+    // Calculate on load
+    calculate();
+</script>
+
+</body>
+</html>
