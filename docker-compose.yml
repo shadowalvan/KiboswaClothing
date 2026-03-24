@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  kiboswa-ctf:
+    build: .
+    container_name: kiboswa-ctf
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./app.py:/app/app.py
+      - ./templates:/app/templates
+      - ./static:/app/static
+      - ./instance:/app/instance
+      - ./ctf_database.db:/app/ctf_database.db
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+      - SECRET_KEY=$C%2#3fvms$qu$@z
+    restart: unless-stopped
+    networks:
+      - ctf-network
+
+networks:
+  ctf-network:
+    driver: bridge

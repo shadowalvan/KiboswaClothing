@@ -1,3 +1,4 @@
+
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session, make_response
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 import sqlite3
@@ -8,6 +9,7 @@ import base64
 import hashlib
 import json
 from datetime import datetime
+
 
 app = Flask(__name__)
 app.secret_key = "$C%2#3fvms$qu$@z"  # intentionally weak for CTF
